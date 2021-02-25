@@ -4,64 +4,36 @@
 
 # parameters
 
-# Legacy mode
-#
-# if legacy set to true we keep the old reverse domain notation for CSI driver name (com.nutanix.csi).
-# need to be set to true only if upgrade and initialy installed with helm package before 2.2.x
-legacy: false
-
 # OS settings
 #
 # Starting v2.3.1 CSI driver is OS independent, this value is deprecated
 os: none
 
 
-# Storage Class settings
-#
-# choose for wich mode (Volume, File, Dynamic File) storageclass need to be created
-volumeClass: true
-fileClass: false
-dynamicFileClass: false
+provisioner:
+  image: quay.io/subodh01/ntnx-csi:v2.3.2
+  imagePullPolicy: IfNotPresent
 
+node:
+  image: quay.io/subodh01/ntnx-csi-os:v2.3.2
+  imagePullPolicy: IfNotPresent
 
-# Default Storage Class settings
-#
-# Decide wich storageclass will be the default
-# value are: node, volume, file, dynfile
-defaultStorageClass: none
-
-# Nutanix Prism Elements settings
-#
-# Allow dynamic creation of Volumes and Fileshare
-# needed if volumeClass or dynamicFileClass is set to true
-
-prismEndPoint: 10.0.0.1
-
-username: admin
-password: nutanix/4u
-
-secretName: ntnx-secret
-
-# Nutanix Prism Elements Existing Secret
-#
-# if set to false a new secret will not be created
-createSecret: true
-
-
-# Volumes Settings
-#
-dataServiceEndPoint: 10.0.0.2
-storageContainer: default
-fsType: xfs
-
-lvmVolume: false
-lvmDisks: 4
-
-# Files Settings
-#
-fileHost: 10.0.0.3
-filePath: share
-
-# Dynamic Files Settings
-#
-fileServerName: file
+sidecars:
+  registrar:
+    image: quay.io/subodh01/csi-node-driver-registrar-os:v1.2.0
+    imagePullPolicy: IfNotPresent
+  provisioner:
+    image: quay.io/subodh01/csi-provisioner-os:v1.5.0
+    imagePullPolicy: IfNotPresent
+  snapshotter:
+    image: quay.io/subodh01/csi-snapshotter-os:v2.1.0
+    imagePullPolicy: IfNotPresent
+  resizer:
+    image: quay.io/subodh01/csi-resizer-os:v0.3.0
+    imagePullPolicy: IfNotPresent
+  livenessprobe:
+    image: quay.io/subodh01/livenessprobe-os:v1.1.0
+    imagePullPolicy: IfNotPresent
+  snapshotController:
+    image: quay.io/subodh01/snapshot-controller-os:v2.0.1
+    imagePullPolicy: IfNotPresent

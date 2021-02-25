@@ -21,7 +21,8 @@ spec:
       hostNetwork: true
       containers:
         - name: driver-registrar
-          image: quay.io/k8scsi/csi-node-driver-registrar:v1.2.0
+          image: {{ .Values.sidecars.registrar.image }}
+          imagePullPolicy: {{ .Values.sidecars.registrar.imagePullPolicy }}
           args:
             - "--v=5"
             - "--csi-address=$(ADDRESS)"
@@ -30,7 +31,7 @@ spec:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: /var/lib/kubelet/plugins/{{ include "nutanix-csi-storage.drivername" . }}/csi.sock
+              value: /var/lib/kubelet/plugins/csi.nutanix.com/csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
@@ -44,11 +45,11 @@ spec:
           securityContext:
             privileged: true
             allowPrivilegeEscalation: true
-          image: quay.io/karbon/ntnx-csi:v2.3.1
+          image: {{ .Values.node.image }}
+          imagePullPolicy: {{ .Values.node.imagePullPolicy }}​
           args :
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(NODE_ID)"
-            - "--drivername={{ include "nutanix-csi-storage.drivername" . }}"
           env:
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
@@ -74,6 +75,7 @@ spec:
               name: iscsi-dir
             - mountPath: /host
               name: root-dir
+              mountPropagation: Bidirectional
           ports:
             - containerPort: 9808
               name: healthz
@@ -87,11 +89,11 @@ spec:
             periodSeconds: 2
             failureThreshold: 3
         - name: liveness-probe
-          imagePullPolicy: Always
           volumeMounts:
             - mountPath: /csi
               name: plugin-dir
-          image: quay.io/k8scsi/livenessprobe:v1.1.0
+          image: {{ .Values.sidecars.livenessprobe.image }}
+          imagePullPolicy: {{ .Values.sidecars.livenessprobe.imagePullPolicy }}
           args:
             - --csi-address=/csi/csi.sock
     {{- with .Values.nodeSelector }}
@@ -109,7 +111,7 @@ spec:
             type: Directory
         - name: plugin-dir
           hostPath:
-            path: /var/lib/kubelet/plugins/{{ include "nutanix-csi-storage.drivername" . }}/
+            path: /var/lib/kubelet/plugins/csi.nutanix.com/
             type: DirectoryOrCreate
         - name: pods-mount-dir
           hostPath:
