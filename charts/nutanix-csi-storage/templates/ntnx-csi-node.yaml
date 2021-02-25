@@ -46,7 +46,7 @@ spec:
             privileged: true
             allowPrivilegeEscalation: true
           image: {{ .Values.node.image }}
-          imagePullPolicy: {{ .Values.node.imagePullPolicy }}​
+          imagePullPolicy: {{ .Values.node.imagePullPolicy }}
           args :
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--nodeid=$(NODE_ID)"

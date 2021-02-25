@@ -11,7 +11,7 @@ os: none
 
 
 provisioner:
-  image: quay.io/subodh01/ntnx-csi:v2.3.2
+  image: quay.io/subodh01/ntnx-csi-os:v2.3.2
   imagePullPolicy: IfNotPresent
 
 node:
