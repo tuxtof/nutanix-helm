@@ -35,5 +35,5 @@ sidecars:
     image: quay.io/subodh01/livenessprobe-os:v1.1.0
     imagePullPolicy: IfNotPresent
   snapshotController:
-    image: quay.io/subodh01/snapshot-controller-os:v2.0.1
+    image: quay.io/subodh01/snapshot-controller-os:v2.1.0
     imagePullPolicy: IfNotPresent
