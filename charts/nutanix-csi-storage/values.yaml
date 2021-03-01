@@ -4,10 +4,10 @@
 
 # parameters
 
-# OS settings
+# Install SecurityContextConstraints
 #
-# Starting v2.3.1 CSI driver is OS independent, this value is deprecated
-os: none
+# SecurityContextConstraints is needed for Openshift
+scc: false
 
 
 provisioner:
